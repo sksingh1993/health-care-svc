@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: health-care-svc
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/health_care_db1
+    username: ${USER_NAME}
+    password: ${PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    enabled: true
+jwt:
+  secret: fdfaaadfadafasfadsfdsfadsfadfafadsfdfadafaf
+  expiration: 86400000
