@@ -4,6 +4,7 @@ package com.tech.soft.health_care_svc.doctor.entity;
 import com.tech.soft.health_care_svc.common.entity.BaseEntity;
 import com.tech.soft.health_care_svc.doctor.enums.Specialization;
 import com.tech.soft.health_care_svc.doctor.leave.entity.DoctorLeave;
+import com.tech.soft.health_care_svc.doctor.schedule.entity.DoctorSchedule;
 import com.tech.soft.health_care_svc.patient.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
@@ -71,4 +72,6 @@ public class Doctor extends BaseEntity {
     private Boolean active = true;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DoctorLeave> doctorLeaves = new ArrayList<>();
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DoctorSchedule> doctorSchedules = new ArrayList<>();
 }
