@@ -2,6 +2,7 @@ package com.tech.soft.health_care_svc.doctor.entity;
 
 
 import com.tech.soft.health_care_svc.common.entity.BaseEntity;
+import com.tech.soft.health_care_svc.common.util.CodeGenerator;
 import com.tech.soft.health_care_svc.doctor.enums.Specialization;
 import com.tech.soft.health_care_svc.doctor.leave.entity.DoctorLeave;
 import com.tech.soft.health_care_svc.doctor.schedule.entity.DoctorSchedule;
@@ -70,8 +71,14 @@ public class Doctor extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private Boolean active = true;
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DoctorLeave> doctorLeaves = new ArrayList<>();
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DoctorSchedule> doctorSchedules = new ArrayList<>();
+//    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<DoctorLeave> doctorLeaves = new ArrayList<>();
+//    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<DoctorSchedule> doctorSchedules = new ArrayList<>();
+
+    /*@PostPersist
+    public void generateDoctorCode() {
+        String year = String.valueOf(LocalDate.now().getYear());
+        this.doctorCode = CodeGenerator.generate("DOC",this.getId());
+    }*/
 }

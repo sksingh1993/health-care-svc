@@ -29,50 +29,33 @@ public class DoctorScheduleValidatorImpl
     public Doctor validateCreate(Long doctorId,
                                  DoctorScheduleRequest request){
 
-        Doctor doctor =
-                doctorValidator.validateActiveDoctor(doctorId);
-
+        Doctor doctor = doctorValidator.validateActiveDoctor(doctorId);
         validateTime(request.getStartTime(), request.getEndTime());
-
-        validateOverlap(
-                doctorId,
-                request.getDayOfWeek(),
-                request.getStartTime(),
-                request.getEndTime());
-
+        validateOverlap(doctorId, request.getDayOfWeek(), request.getStartTime(), request.getEndTime());
         return doctor;
     }
 
     @Override
-    public Doctor validateUpdate(Long doctorId,
-                                 Long scheduleId,
-                                 DoctorScheduleUpdateRequest request) {
+    public Doctor validateUpdate(Long doctorId, Long scheduleId, DoctorScheduleUpdateRequest request) {
 
         validateSchedule(doctorId, scheduleId);
 
-        Doctor doctor =
-                doctorValidator.validateActiveDoctor(doctorId);
+        Doctor doctor = doctorValidator.validateActiveDoctor(doctorId);
 
         validateTime(request.getStartTime(), request.getEndTime());
 
         if (repository
                 .existsByDoctorIdAndDayOfWeekAndStartTimeLessThanAndEndTimeGreaterThanAndIdNotAndActiveTrue(
-                        doctorId,
-                        request.getDayOfWeek(),
-                        request.getEndTime(),
-                        request.getStartTime(),
+                        doctorId, request.getDayOfWeek(), request.getEndTime(), request.getStartTime(),
                         scheduleId)) {
-
-            throw new DuplicateResourceException(
-                    "Schedule overlaps with existing schedule.");
+            throw new DuplicateResourceException("Schedule overlaps with existing schedule.");
         }
 
         return doctor;
     }
 
     @Override
-    public DoctorSchedule validateSchedule(Long doctorId,
-                                           Long scheduleId) {
+    public DoctorSchedule validateSchedule(Long doctorId, Long scheduleId) {
 
         DoctorSchedule schedule =
                 repository.findByIdAndActiveTrue(scheduleId)
@@ -82,13 +65,9 @@ public class DoctorScheduleValidatorImpl
                                         scheduleId));
 
         if (!schedule.getDoctor().getId().equals(doctorId)) {
-
             throw new ResourceNotFoundException(
-                    String.format(
-                            "Schedule %d does not belong to doctor",
-                            scheduleId),doctorId);
+                    String.format("Schedule %d does not belong to doctor", scheduleId),doctorId);
         }
-
         return schedule;
     }
 
@@ -97,30 +76,18 @@ public class DoctorScheduleValidatorImpl
 
     }
 
-    private void validateTime(LocalTime start,
-                              LocalTime end) {
+    private void validateTime(LocalTime start, LocalTime end) {
 
         if (!start.isBefore(end)) {
-
-            throw new IllegalArgumentException(
-                    "Start time must be before end time.");
+            throw new IllegalArgumentException("Start time must be before end time.");
         }
     }
 
-    private void validateOverlap(Long doctorId,
-                                 DayOfWeek day,
-                                 LocalTime start,
-                                 LocalTime end) {
+    private void validateOverlap(Long doctorId, DayOfWeek day, LocalTime start, LocalTime end) {
 
-        if (repository
-                .existsByDoctorIdAndDayOfWeekAndStartTimeLessThanAndEndTimeGreaterThanAndActiveTrue(
-                        doctorId,
-                        day,
-                        end,
-                        start)) {
-
-            throw new DuplicateResourceException(
-                    "Schedule overlaps with existing schedule.");
+        if (repository.existsByDoctorIdAndDayOfWeekAndStartTimeLessThanAndEndTimeGreaterThanAndActiveTrue(
+                        doctorId, day, end, start)) {
+            throw new DuplicateResourceException("Schedule overlaps with existing schedule.");
         }
     }
 

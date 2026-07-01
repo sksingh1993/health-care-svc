@@ -1,6 +1,7 @@
 package com.tech.soft.health_care_svc.doctor.schedule.service;
 
 
+import com.tech.soft.health_care_svc.appointment.dto.response.AvailableSlotResponse;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleRequest;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleSearchRequest;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleUpdateRequest;
@@ -8,6 +9,9 @@ import com.tech.soft.health_care_svc.doctor.schedule.dto.response.DoctorSchedule
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public interface DoctorScheduleService {
 
@@ -32,4 +36,8 @@ public interface DoctorScheduleService {
     void deleteSchedule(
             Long doctorId,
             Long scheduleId);
+
+    List<AvailableSlotResponse> getAvailableSlots(
+            Long doctorId,
+            LocalDate appointmentDate);
 }

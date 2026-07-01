@@ -18,63 +18,44 @@ public class DoctorValidator {
     private final DoctorRepository doctorRepository;
 
     public void validateCreate(DoctorRequest request) {
-
         validateMobile(request.getMobile());
-
         validateEmail(request.getEmail());
-
         validateRegistrationNumber(request.getRegistrationNumber());
     }
 
-    public void validateUpdate(
-            DoctorUpdateRequest request,
-            Doctor doctor) {
+    public void validateUpdate(DoctorUpdateRequest request, Doctor doctor) {
 
         if (!doctor.getMobile().equals(request.getMobile())) {
             validateMobile(request.getMobile());
         }
 
-        if (request.getEmail() != null &&
-                !request.getEmail().equalsIgnoreCase(doctor.getEmail())) {
-
+        if (request.getEmail() != null && !request.getEmail().equalsIgnoreCase(doctor.getEmail())) {
             validateEmail(request.getEmail());
         }
 
-        if (!doctor.getRegistrationNumber()
-                .equals(request.getRegistrationNumber())) {
-
-            validateRegistrationNumber(
-                    request.getRegistrationNumber());
+        if (!doctor.getRegistrationNumber().equals(request.getRegistrationNumber())) {
+            validateRegistrationNumber(request.getRegistrationNumber());
         }
     }
 
     private void validateMobile(String mobile) {
 
         if (doctorRepository.existsByMobile(mobile)) {
-            throw new DuplicateResourceException(
-                    "Doctor already exists with mobile : " + mobile);
+            throw new DuplicateResourceException("Doctor already exists with mobile : " + mobile);
         }
     }
 
     private void validateEmail(String email) {
 
-        if (email != null &&
-                doctorRepository.existsByEmail(email)) {
-
-            throw new DuplicateResourceException(
-                    "Doctor already exists with email : " + email);
+        if (email != null && doctorRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException("Doctor already exists with email : " + email);
         }
     }
 
-    private void validateRegistrationNumber(
-            String registrationNumber) {
+    private void validateRegistrationNumber(String registrationNumber) {
 
-        if (doctorRepository.existsByRegistrationNumber(
-                registrationNumber)) {
-
-            throw new DuplicateResourceException(
-                    "Registration number already exists : "
-                            + registrationNumber);
+        if (doctorRepository.existsByRegistrationNumber(registrationNumber)) {
+            throw new DuplicateResourceException("Registration number already exists : " + registrationNumber);
         }
     }
 
@@ -82,17 +63,11 @@ public class DoctorValidator {
 
         Doctor doctor = doctorRepository
                 .findById(doctorId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Doctor",
-                                doctorId));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", doctorId));
 
         if (!Boolean.TRUE.equals(doctor.getActive())) {
-
-            throw new InvalidRequestException(
-                    "Doctor is inactive.");
+            throw new InvalidRequestException("Doctor is inactive.");
         }
-
         return doctor;
     }
 }

@@ -1,6 +1,7 @@
 package com.tech.soft.health_care_svc.patient.entity;
 
 import com.tech.soft.health_care_svc.common.entity.BaseEntity;
+import com.tech.soft.health_care_svc.common.util.CodeGenerator;
 import com.tech.soft.health_care_svc.patient.enums.BloodGroup;
 import com.tech.soft.health_care_svc.patient.enums.Gender;
 import jakarta.persistence.*;
@@ -21,7 +22,7 @@ public class Patient extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "patient_code", nullable = false, unique = true)
+    @Column(name = "patient_code", nullable = true, unique = true)
     private String patientCode;
 
     @Column(name = "first_name", nullable = false)
@@ -61,5 +62,11 @@ public class Patient extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = true;
+   /* @PostPersist
+    public void generatePatientCode() {
+        String year = String.valueOf(LocalDate.now().getYear());
+        this.patientCode = CodeGenerator.generate("PAT",this.getId());
+    }*/
+
 
 }
