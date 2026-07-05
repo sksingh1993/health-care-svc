@@ -1,33 +1,33 @@
-package com.tech.soft.health_care_svc.doctor.specification;
+package com.tech.soft.health_care_svc.staff.specification;
 
 
-import com.tech.soft.health_care_svc.doctor.entity.Doctor;
 import com.tech.soft.health_care_svc.doctor.enums.Specialization;
+import com.tech.soft.health_care_svc.staff.entity.Staff;
 import org.springframework.data.jpa.domain.Specification;
 
-public final class DoctorSpecification {
+public final class StaffSpecification1 {
 
-    private DoctorSpecification() {
+    private StaffSpecification1() {
     }
 
-    public static Specification<Doctor> isActive() {
+    public static Specification<Staff> isActive() {
         return (root, query, cb) ->
                 cb.isTrue(root.get("active"));
     }
 
-    public static Specification<Doctor> hasDoctorCode(String doctorCode) {
+    public static Specification<Staff> hasEmployeeId(String employeeId) {
 
         return (root, query, cb) -> {
 
-            if (doctorCode == null || doctorCode.isBlank()) {
+            if (employeeId == null || employeeId.isBlank()) {
                 return null;
             }
 
-            return cb.equal(root.get("doctorCode"), doctorCode);
+            return cb.equal(root.get("employeeId"), employeeId);
         };
     }
 
-    public static Specification<Doctor> hasMobile(String mobile) {
+    public static Specification<Staff> hasMobile(String mobile) {
 
         return (root, query, cb) -> {
 
@@ -39,10 +39,9 @@ public final class DoctorSpecification {
         };
     }
 
-    public static Specification<Doctor> hasName(String name) {
+    public static Specification<Staff> hasName(String name) {
 
         return (root, query, cb) -> {
-
 
             if (name == null || name.isBlank()) {
                 return null;
@@ -57,7 +56,7 @@ public final class DoctorSpecification {
         };
     }
 
-    public static Specification<Doctor> hasSpecialization(
+    public static Specification<Staff> hasSpecialization(
             Specialization specialization) {
 
         return (root, query, cb) -> {

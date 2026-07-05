@@ -25,6 +25,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -66,8 +69,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                     CodeGenerator.generate("APT",appointment.getId()));
             appointment = repository.save(appointment);
         } catch (DataIntegrityViolationException ex) {
-            throw new DuplicateResourceException(
-                    "Appointment already exists for this doctor, patient, date and time.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already exists with email : "
+                            + "email");
+            throw new DuplicateResourceException(errors);
+//            throw new DuplicateResourceException(
+//                    "Appointment already exists for this doctor, patient, date and time.");
         }
 
         return mapper.toResponse(appointment);

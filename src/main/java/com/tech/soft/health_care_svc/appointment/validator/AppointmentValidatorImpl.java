@@ -16,7 +16,9 @@ import com.tech.soft.health_care_svc.patient.validator.PatientValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -50,8 +52,14 @@ public class AppointmentValidatorImpl
                         request.getAppointmentTime());
 
         if (exists) {
-            throw new DuplicateResourceException(String.format("Appointment already exists for doctor id: %d, patient id: %d, date and time.: %s & %s",
-                    doctor.getId(),patient.getId(),request.getAppointmentDate(),request.getAppointmentTime()));
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already exists with email : "
+                            + "email");
+            throw new DuplicateResourceException(errors);
+//            throw new DuplicateResourceException(String.format("Appointment already exists for doctor id: %d, patient id: %d, date and time.: %s & %s",
+//                    doctor.getId(),patient.getId(),request.getAppointmentDate(),request.getAppointmentTime()));
         }
 //TO DO
         List<AvailableSlotResponse> slots =
@@ -73,8 +81,13 @@ public class AppointmentValidatorImpl
                 request.getDoctorId(), request.getAppointmentDate(), request.getAppointmentTime(), AppointmentStatus.BOOKED
         );
         if(!selectedSlot.isAvailable()){
-            throw new DuplicateResourceException(
-                    "Selected slot is already booked.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already exists with email : "
+                            + "email");
+//            throw new DuplicateResourceException(
+//                    "Selected slot is already booked.");
         }
 
 

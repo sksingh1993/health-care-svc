@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -20,5 +21,6 @@ public class ApiErrorResponse {
 
     private String path;
 
-    private List<String> validationErrors;
+
+    private Map<String,String> validationErrors;
 }

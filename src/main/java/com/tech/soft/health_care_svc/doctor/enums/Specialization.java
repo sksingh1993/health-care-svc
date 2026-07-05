@@ -10,5 +10,6 @@ public enum Specialization {
     ENT,
     OPHTHALMOLOGIST,
     DENTIST,
-    PSYCHIATRIST
+    PSYCHIATRIST,
+    NEUROLOGIST
 }

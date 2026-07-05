@@ -1,6 +1,7 @@
 package com.tech.soft.health_care_svc.doctor.entity;
 
 
+import com.tech.soft.health_care_svc.auth.entity.User;
 import com.tech.soft.health_care_svc.common.entity.BaseEntity;
 import com.tech.soft.health_care_svc.common.util.CodeGenerator;
 import com.tech.soft.health_care_svc.doctor.enums.Specialization;
@@ -71,6 +72,11 @@ public class Doctor extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private Boolean active = true;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
+
 //    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<DoctorLeave> doctorLeaves = new ArrayList<>();
 //    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)

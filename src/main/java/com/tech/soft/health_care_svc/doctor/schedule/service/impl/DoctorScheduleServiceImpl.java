@@ -1,9 +1,8 @@
-package com.tech.soft.health_care_svc.doctor.schedule.service;
+package com.tech.soft.health_care_svc.doctor.schedule.service.impl;
 
 import com.tech.soft.health_care_svc.appointment.dto.response.AvailableSlotResponse;
 import com.tech.soft.health_care_svc.appointment.enums.AppointmentStatus;
 import com.tech.soft.health_care_svc.appointment.repository.AppointmentRepository;
-import com.tech.soft.health_care_svc.common.exception.ResourceNotFoundException;
 import com.tech.soft.health_care_svc.doctor.entity.Doctor;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleRequest;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleSearchRequest;
@@ -12,11 +11,11 @@ import com.tech.soft.health_care_svc.doctor.schedule.dto.response.DoctorSchedule
 import com.tech.soft.health_care_svc.doctor.schedule.entity.DoctorSchedule;
 import com.tech.soft.health_care_svc.doctor.schedule.mapper.DoctorScheduleMapper;
 import com.tech.soft.health_care_svc.doctor.schedule.repository.DoctorScheduleRepository;
+import com.tech.soft.health_care_svc.doctor.schedule.service.DoctorScheduleService;
 import com.tech.soft.health_care_svc.doctor.schedule.specification.DoctorScheduleSpecification;
 import com.tech.soft.health_care_svc.doctor.schedule.validator.DoctorScheduleValidator;
 import com.tech.soft.health_care_svc.doctor.schedule.enums.DayOfWeek;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

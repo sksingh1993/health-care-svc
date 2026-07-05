@@ -15,6 +15,8 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -48,7 +50,11 @@ public class DoctorScheduleValidatorImpl
                 .existsByDoctorIdAndDayOfWeekAndStartTimeLessThanAndEndTimeGreaterThanAndIdNotAndActiveTrue(
                         doctorId, request.getDayOfWeek(), request.getEndTime(), request.getStartTime(),
                         scheduleId)) {
-            throw new DuplicateResourceException("Schedule overlaps with existing schedule.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "schedule",
+                    "Schedule overlaps with existing schedule.");
+            //throw new DuplicateResourceException("Schedule overlaps with existing schedule.");
         }
 
         return doctor;
@@ -79,7 +85,11 @@ public class DoctorScheduleValidatorImpl
     private void validateTime(LocalTime start, LocalTime end) {
 
         if (!start.isBefore(end)) {
-            throw new IllegalArgumentException("Start time must be before end time.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "startTime",
+                    "tart time must be before end time.");
+            //throw new IllegalArgumentException("Start time must be before end time.");
         }
     }
 
@@ -87,7 +97,12 @@ public class DoctorScheduleValidatorImpl
 
         if (repository.existsByDoctorIdAndDayOfWeekAndStartTimeLessThanAndEndTimeGreaterThanAndActiveTrue(
                         doctorId, day, end, start)) {
-            throw new DuplicateResourceException("Schedule overlaps with existing schedule.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "schedule",
+                    "Schedule overlaps with existing schedule. : "
+                            + doctorId);
+            throw new DuplicateResourceException(errors);
         }
     }
 

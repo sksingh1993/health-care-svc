@@ -11,6 +11,9 @@ import com.tech.soft.health_care_svc.doctor.entity.Doctor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 @RequiredArgsConstructor
 public class DoctorValidator {
@@ -41,21 +44,37 @@ public class DoctorValidator {
     private void validateMobile(String mobile) {
 
         if (doctorRepository.existsByMobile(mobile)) {
-            throw new DuplicateResourceException("Doctor already exists with mobile : " + mobile);
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "mobile",
+                    "Doctor already exists with mobile : "
+                            + mobile);
+            throw new DuplicateResourceException(errors);
         }
     }
 
     private void validateEmail(String email) {
 
         if (email != null && doctorRepository.existsByEmail(email)) {
-            throw new DuplicateResourceException("Doctor already exists with email : " + email);
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already exists with email : "
+                            + email);
+            throw new DuplicateResourceException(errors);
         }
     }
 
     private void validateRegistrationNumber(String registrationNumber) {
 
         if (doctorRepository.existsByRegistrationNumber(registrationNumber)) {
-            throw new DuplicateResourceException("Registration number already exists : " + registrationNumber);
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already exists with email : "
+                            + "email");
+            throw new DuplicateResourceException(errors);
+            //throw new DuplicateResourceException("Registration number already exists : " + registrationNumber);
         }
     }
 

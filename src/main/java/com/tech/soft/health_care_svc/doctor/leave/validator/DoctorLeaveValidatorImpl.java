@@ -15,6 +15,8 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -40,9 +42,14 @@ public class DoctorLeaveValidatorImpl
                         doctorId,
                         request.getToDate(),
                         request.getFromDate())) {
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already exists with email : "
+                            + "email");
 
-            throw new DuplicateResourceException(
-                    "Doctor already has leave during the selected period.");
+//            throw new DuplicateResourceException(
+//                    "Doctor already has leave during the selected period.");
         }
 
         return doctor;
@@ -70,9 +77,12 @@ public class DoctorLeaveValidatorImpl
                         request.getToDate(),
                         request.getFromDate(),
                         id)) {
-
-            throw new DuplicateResourceException(
-                    "Doctor already has leave during the selected period.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "leve",
+                    "Doctor already has leave during the selected period : "
+                            + doctorId);
+            throw new DuplicateResourceException(errors);
         }
         return doctor;
     }
@@ -102,9 +112,12 @@ public class DoctorLeaveValidatorImpl
                         doctorId,
                         fromDate,
                         fromDate)) {
-
-            throw new DuplicateResourceException(
-                    "Doctor already has leave during the selected period.");
+            Map<String, String> errors = new HashMap<>();
+            errors.put(
+                    "email",
+                    "Doctor already has leave during the selected period. : "
+                            + doctorId);
+            throw new DuplicateResourceException(errors);
         }
     }
 }

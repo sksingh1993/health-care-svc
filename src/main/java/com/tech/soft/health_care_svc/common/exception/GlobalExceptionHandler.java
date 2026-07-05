@@ -1,10 +1,12 @@
 package com.tech.soft.health_care_svc.common.exception;
 
 
+import com.tech.soft.health_care_svc.common.dto.ApiResponse;
 import com.tech.soft.health_care_svc.common.response.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -43,6 +47,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT.value())
                 .error("CONFLICT")
                 .message(ex.getMessage())
+                .validationErrors(ex.getValidationErrors())
                 .path(request.getRequestURI())
                 .build();
 
@@ -55,11 +60,13 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
-        List<String> errors = ex.getBindingResult()
+            Map<String, String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(FieldError::getDefaultMessage)
-                .toList();
+                .collect(Collectors.toMap(
+                        FieldError::getField,          // key = field name
+                        FieldError::getDefaultMessage  // value = error message
+                ));
 
         ApiErrorResponse response = ApiErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -83,6 +90,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("INTERNAL_SERVER_ERROR")
                 .message(ex.getMessage())
+                .validationErrors(Map.of("Internal",ex.toString()))
                 .path(request.getRequestURI())
                 .build();
 
@@ -103,5 +111,29 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(TransactionSystemException.class)
+    public ResponseEntity<ApiErrorResponse> handle(TransactionSystemException ex) {
+
+        ex.printStackTrace();
+
+        Throwable root = ex.getRootCause();
+
+        while (root != null) {
+            System.out.println(root);
+            root = root.getCause();
+        }
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("INTERNAL_SERVER_ERROR")
+                .message(ex.getMessage())
+                .validationErrors(Map.of("Internal",ex.toString()))
+                //.path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.internalServerError().body(response);
     }
 }

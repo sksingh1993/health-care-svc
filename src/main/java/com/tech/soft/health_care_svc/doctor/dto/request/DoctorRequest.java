@@ -14,7 +14,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class DoctorRequest {
+    @NotBlank(message = "Username is required")
+    @Size(min = 4, max = 50, message = "Username must be between 4 and 50 characters")
+    private String username;
 
+    @NotBlank(message = "Password is required")
+    //@Size(min = 8, message = "Password must be at least 8 characters")
+    private String password;
     @NotBlank(message = "First name is required")
     @Size(max = 100)
     private String firstName;

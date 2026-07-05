@@ -5,6 +5,7 @@ import com.tech.soft.health_care_svc.patient.enums.Gender;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -25,6 +26,8 @@ public class DoctorResponse {
 
     private Integer age;
 
+    private LocalDate dateOfBirth;
+
     private Gender gender;
 
     private String mobile;
@@ -42,4 +45,6 @@ public class DoctorResponse {
     private String registrationNumber;
 
     private Boolean active;
+
+    private String address;
 }
