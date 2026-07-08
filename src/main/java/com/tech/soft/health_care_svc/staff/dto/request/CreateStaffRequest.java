@@ -3,10 +3,8 @@ package com.tech.soft.health_care_svc.staff.dto.request;
 import com.tech.soft.health_care_svc.auth.enums.RoleType;
 import com.tech.soft.health_care_svc.patient.enums.Gender;
 import com.tech.soft.health_care_svc.staff.enums.Department;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,6 +20,9 @@ public class CreateStaffRequest {
     @NotNull(message = "Gender is required")
     private Gender gender;
 
+    @NotNull(message = "Date Of Birth is required")
+    private LocalDate dateOfBirth;
+
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number")
     private String mobile;
 
@@ -31,18 +32,19 @@ public class CreateStaffRequest {
     @NotNull(message = "Department is required")
     private Department department;
 
-    private String designation;
+    private RoleType designation;
 
     @NotNull(message = "Joining date is required")
     private LocalDate joiningDate;
 
+    private String address;
+
     // User Details
     @NotBlank(message = "Username is required")
-    private String userName;
+    private String username;
 
     @NotBlank(message = "Password is required")
     private String password;
 
-    @NotNull(message = "Role is required")
-    private RoleType role;
+
 }

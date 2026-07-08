@@ -26,9 +26,8 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true)
     CreateUserRequest toUserRequest(DoctorRequest doctorRequest);
 
-    @Mapping(target = "roles",
-    expression = "java(getRole(request.getRole()))")
-    @Mapping(target = "username",source = "userName")
+    @Mapping(target = "roles",source = "designation")
+
     CreateUserRequest toUserRequest(CreateStaffRequest request);
 
     @Mapping(target = "roles",

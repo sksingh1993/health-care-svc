@@ -1,7 +1,10 @@
 package com.tech.soft.health_care_svc.patient.dto.response;
 import com.tech.soft.health_care_svc.patient.enums.BloodGroup;
 import com.tech.soft.health_care_svc.patient.enums.Gender;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,7 +21,11 @@ public class PatientResponse {
 
     private String lastName;
 
+    private String fullName;
+
     private Integer age;
+
+    private LocalDate dateOfBirth;
 
     private Gender gender;
 
@@ -33,4 +40,11 @@ public class PatientResponse {
     private String address;
 
     private Boolean active;
+
+    private String emergencyContactName;
+
+    @Pattern(
+            regexp = "^[6-9]\\d{9}$",
+            message = "Invalid emergency contact number")
+    private String emergencyContactNumber;
 }

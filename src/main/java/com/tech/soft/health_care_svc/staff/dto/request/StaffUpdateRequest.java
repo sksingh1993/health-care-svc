@@ -23,6 +23,9 @@ public class StaffUpdateRequest {
     @NotNull(message = "Gender is required")
     private Gender gender;
 
+    @NotNull(message = "Date Of Birth is required")
+    private LocalDate dateOfBirth;
+
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number")
     private String mobile;
 

@@ -43,6 +43,9 @@ public class Staff extends BaseEntity {
     @Column(length = 15)
     private String mobile;
 
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
     @Column(length = 100)
     private String email;
 

@@ -8,11 +8,14 @@ import com.tech.soft.health_care_svc.auth.mapper.UserMapper;
 import com.tech.soft.health_care_svc.auth.repository.RoleRepository;
 import com.tech.soft.health_care_svc.auth.repository.UserRepository;
 import com.tech.soft.health_care_svc.auth.service.UserService;
+import com.tech.soft.health_care_svc.common.exception.DuplicateResourceException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -75,9 +78,9 @@ public class UserServiceImpl implements UserService {
 
         if (userRepository.existsByUsername(
                 request.getUsername())) {
-
-            throw new RuntimeException(
-                    "Username already exists");
+            Map<String, String> validationErrors = new HashMap<>();
+            validationErrors.put("duplicateUser","Username already exists");
+            throw new DuplicateResourceException(validationErrors);
         }
 
         Set<Role> roles = getRoles(request);

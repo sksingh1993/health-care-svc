@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/staff")
+@RequestMapping("/api/v1/staffs")
 @RequiredArgsConstructor
 //@Tag(name = "Staff", description = "Staff Management APIs")
 public class StaffController {
@@ -62,10 +62,10 @@ public class StaffController {
                         response));
     }
 
-    @PostMapping("/search")
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<StaffResponse>>>  search(
-            @RequestBody StaffSearchRequest request,
+            @ModelAttribute StaffSearchRequest request,
             Pageable pageable) {
         Page<StaffResponse> response = staffService.searchStaff(request, pageable);
         return ResponseEntity.ok(

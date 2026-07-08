@@ -3,8 +3,10 @@ package com.tech.soft.health_care_svc.doctor.service.impl;
 import com.tech.soft.health_care_svc.auth.dto.CreateUserRequest;
 import com.tech.soft.health_care_svc.auth.dto.UserResponse;
 import com.tech.soft.health_care_svc.auth.entity.User;
+import com.tech.soft.health_care_svc.auth.enums.RoleType;
 import com.tech.soft.health_care_svc.auth.mapper.UserMapper;
 import com.tech.soft.health_care_svc.auth.service.UserManagementService;
+import com.tech.soft.health_care_svc.auth.validator.UserValidator;
 import com.tech.soft.health_care_svc.common.exception.DuplicateResourceException;
 import com.tech.soft.health_care_svc.common.exception.ResourceNotFoundException;
 import com.tech.soft.health_care_svc.common.util.CodeGenerator;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -39,15 +42,23 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final DoctorMapper doctorMapper;
     private final DoctorValidator doctorValidator;
+    private final UserValidator userValidator;
     private final UserManagementService userManagementService;
     private final UserMapper userMapper;
 
     @Override
     public DoctorResponse createDoctor(DoctorRequest request) {
-
-        doctorValidator.validateCreate(request);
-
+        Map<String, String> errors = new HashMap<>();
         CreateUserRequest userRequest = userMapper.toUserRequest(request);
+        userRequest.setRoles(Set.of(RoleType.DOCTOR.name()));
+        userValidator.validateCreate(userRequest,errors);
+        doctorValidator.validateCreate(request,errors);
+
+        if(!errors.isEmpty()){
+            throw new DuplicateResourceException(errors);
+        }
+
+
         User doctorUser = userManagementService.createDoctorUser(userRequest);
         Doctor doctor = doctorMapper.toEntity(request);
         doctor.setUser(doctorUser);
@@ -100,8 +111,11 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Doctor", id));
-
-        doctorValidator.validateUpdate(request, doctor);
+        Map<String, String> errors = new HashMap<>();
+        doctorValidator.validateUpdate(request, doctor,errors);
+        if(!errors.isEmpty()){
+            throw new DuplicateResourceException(errors);
+        }
 
         doctorMapper.updateEntity(request, doctor);
 
@@ -127,79 +141,4 @@ public class DoctorServiceImpl implements DoctorService {
 
     }
 
-    private void validateDuplicateFields(DoctorRequest request) {
-
-        if (doctorRepository.existsByMobile(request.getMobile())) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "mobile",
-                    "Mobile number already exists. : "
-                            + request.getMobile());
-            throw new DuplicateResourceException(errors);
-            //throw new DuplicateResourceException("Mobile number already exists.");
-        }
-
-        if (request.getEmail() != null &&
-                doctorRepository.existsByEmail(request.getEmail())) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "email",
-                    "Email already exists. : "
-                            + request.getEmail());
-            throw new DuplicateResourceException(errors);
-            //throw new DuplicateResourceException("Email already exists.");
-        }
-
-        if (doctorRepository.existsByRegistrationNumber(
-                request.getRegistrationNumber())) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "registration",
-                    "Registration number already exists. : "
-                            + request.getRegistrationNumber());
-            throw new DuplicateResourceException(errors);
-            //throw new DuplicateResourceException("Registration number already exists.");
-        }
-    }
-
-    private void validateUpdate(
-            DoctorUpdateRequest request,
-            Doctor doctor) {
-
-        if (!doctor.getMobile().equals(request.getMobile()) &&
-                doctorRepository.existsByMobile(request.getMobile())) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "mobile",
-                    "Mobile number already exists. : "
-                            + request.getMobile());
-            throw new DuplicateResourceException(errors);
-            //throw new DuplicateResourceException("Mobile number already exists.");
-        }
-
-        if (request.getEmail() != null &&
-                !request.getEmail().equals(doctor.getEmail()) &&
-                doctorRepository.existsByEmail(request.getEmail())) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "email",
-                    "Email already exists.: "
-                            + doctor.getEmail());
-            throw new DuplicateResourceException(errors);
-            //throw new DuplicateResourceException("Email already exists.");
-        }
-
-        if (!doctor.getRegistrationNumber().equals(request.getRegistrationNumber()) &&
-                doctorRepository.existsByRegistrationNumber(
-                        request.getRegistrationNumber())) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "registration",
-                    "Registration number already exists. : "
-                            + request.getRegistrationNumber());
-            throw new DuplicateResourceException(errors);
-//            throw new DuplicateResourceException(
-//                    "Registration number already exists.");
-        }
-    }
 }

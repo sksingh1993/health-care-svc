@@ -20,60 +20,52 @@ public class DoctorValidator {
 
     private final DoctorRepository doctorRepository;
 
-    public void validateCreate(DoctorRequest request) {
-        validateMobile(request.getMobile());
-        validateEmail(request.getEmail());
-        validateRegistrationNumber(request.getRegistrationNumber());
+    public void validateCreate(DoctorRequest request,Map<String, String> errors) {
+        validateMobile(request.getMobile(),errors);
+        validateEmail(request.getEmail(),errors);
+        validateRegistrationNumber(request.getRegistrationNumber(),errors);
     }
 
-    public void validateUpdate(DoctorUpdateRequest request, Doctor doctor) {
+    public void validateUpdate(DoctorUpdateRequest request, Doctor doctor,Map<String, String> errors) {
 
         if (!doctor.getMobile().equals(request.getMobile())) {
-            validateMobile(request.getMobile());
+            validateMobile(request.getMobile(),errors);
         }
 
         if (request.getEmail() != null && !request.getEmail().equalsIgnoreCase(doctor.getEmail())) {
-            validateEmail(request.getEmail());
+            validateEmail(request.getEmail(),errors);
         }
 
         if (!doctor.getRegistrationNumber().equals(request.getRegistrationNumber())) {
-            validateRegistrationNumber(request.getRegistrationNumber());
+            validateRegistrationNumber(request.getRegistrationNumber(),errors);
         }
     }
 
-    private void validateMobile(String mobile) {
+    private void validateMobile(String mobile,Map<String, String> errors) {
 
         if (doctorRepository.existsByMobile(mobile)) {
-            Map<String, String> errors = new HashMap<>();
             errors.put(
                     "mobile",
-                    "Doctor already exists with mobile : "
-                            + mobile);
-            throw new DuplicateResourceException(errors);
+                    "Doctor already exists with mobile : " + mobile);
         }
     }
 
-    private void validateEmail(String email) {
+    private void validateEmail(String email,Map<String, String> errors) {
 
         if (email != null && doctorRepository.existsByEmail(email)) {
-            Map<String, String> errors = new HashMap<>();
             errors.put(
                     "email",
-                    "Doctor already exists with email : "
-                            + email);
-            throw new DuplicateResourceException(errors);
+                    "Doctor already exists with email : " + email);
         }
     }
 
-    private void validateRegistrationNumber(String registrationNumber) {
+    private void validateRegistrationNumber(String registrationNumber,Map<String, String> errors) {
 
         if (doctorRepository.existsByRegistrationNumber(registrationNumber)) {
-            Map<String, String> errors = new HashMap<>();
+
             errors.put(
-                    "email",
-                    "Doctor already exists with email : "
-                            + "email");
-            throw new DuplicateResourceException(errors);
+                    "registrationNumber",
+                    "Doctor already exists with registration : " + registrationNumber);
             //throw new DuplicateResourceException("Registration number already exists : " + registrationNumber);
         }
     }

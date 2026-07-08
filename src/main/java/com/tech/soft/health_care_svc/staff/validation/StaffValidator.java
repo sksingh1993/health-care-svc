@@ -19,20 +19,20 @@ public class StaffValidator {
 
     private final StaffRepository staffRepository;
 
-    public void validateCreate(CreateStaffRequest request) {
+    public void validateCreate(CreateStaffRequest request,Map<String, String> errors) {
 
-        validateEmail(request.getEmail());
-        validateMobile(request.getMobile());
+        validateEmail(request.getEmail(),errors);
+        validateMobile(request.getMobile(),errors);
     }
 
-    public void validateUpdate(Long staffId, StaffUpdateRequest request) {
+    public void validateUpdate(Long staffId, StaffUpdateRequest request,Map<String, String> errors) {
 
         Staff staff = getStaff(staffId);
 
-        validateEmail(staff.getId(), request.getEmail());
-        validateMobile(staff.getId(), request.getMobile());
+        validateEmail(staff.getId(), request.getEmail(),errors);
+        validateMobile(staff.getId(), request.getMobile(),errors);
 
-        validateVersion(staff, request.getVersion());
+        validateVersion(staff, request.getVersion(),errors);
     }
 
     public Staff getStaff(Long id) {
@@ -41,33 +41,26 @@ public class StaffValidator {
                         new UsernameNotFoundException("Staff not found with id : " + id));
     }
 
-    private void validateEmail(String email) {
+    private void validateEmail(String email,Map<String, String> errors) {
 
         if (email != null && staffRepository.existsByEmail(email)) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "email",
-                    "Email already exists. : "
-                            + email);
-            throw new DuplicateResourceException(errors);
+
+            errors.put("email","Email already exists. : "+ email);
+            //throw new DuplicateResourceException(errors);
             //throw new DuplicateResourceException("Email already exists.");
         }
     }
 
-    private void validateMobile(String mobile) {
+    private void validateMobile(String mobile,Map<String, String> errors) {
 
         if (mobile != null && staffRepository.existsByMobile(mobile)) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "mobile",
-                    "Mobile number already exists. : "
-                            + mobile);
-            throw new DuplicateResourceException(errors);
+            errors.put("mobile","Mobile number already exists. : "+ mobile);
+            //throw new DuplicateResourceException(errors);
             //throw new DuplicateResourceException("Mobile number already exists.");
         }
     }
 
-    private void validateEmail(Long staffId, String email) {
+    private void validateEmail(Long staffId, String email,Map<String, String> errors) {
 
         if (email == null) {
             return;
@@ -76,17 +69,14 @@ public class StaffValidator {
         staffRepository.findByEmail(email)
                 .filter(staff -> !staff.getId().equals(staffId))
                 .ifPresent(staff -> {
-                    Map<String, String> errors = new HashMap<>();
-                    errors.put(
-                            "email",
-                            "Email already exists. : "
-                                    + email);
-                    throw new DuplicateResourceException(errors);
+
+                    errors.put("email","Email already exists. : "+ email);
+                    //throw new DuplicateResourceException(errors);
                     //throw new DuplicateResourceException("Email already exists.");
                 });
     }
 
-    private void validateMobile(Long staffId, String mobile) {
+    private void validateMobile(Long staffId, String mobile,Map<String, String> errors) {
 
         if (mobile == null) {
             return;
@@ -95,25 +85,18 @@ public class StaffValidator {
         staffRepository.findByMobile(mobile)
                 .filter(staff -> !staff.getId().equals(staffId))
                 .ifPresent(staff -> {
-                    Map<String, String> errors = new HashMap<>();
-                    errors.put(
-                            "mobile",
-                            "Mobile number already exists. : "
-                                    + mobile);
-                    throw new DuplicateResourceException(errors);
+                    errors.put("mobile","Mobile number already exists. : "+ mobile);
+                    //throw new DuplicateResourceException(errors);
                     //throw new DuplicateResourceException("Mobile number already exists.");
                 });
     }
 
-    private void validateVersion(Staff staff, Long version) {
+    private void validateVersion(Staff staff, Long version,Map<String, String> errors) {
 
         if (!staff.getVersion().equals(version)) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put(
-                    "version",
-                    "Staff record has been modified by another user. Please refresh and try again. : "
+            errors.put("version","Staff record has been modified by another user. Please refresh and try again. : "
                             + version);
-            throw new DuplicateResourceException(errors);
+            //throw new DuplicateResourceException(errors);
 //            throw new DuplicateResourceException(
 //                    "Staff record has been modified by another user. Please refresh and try again.");
         }

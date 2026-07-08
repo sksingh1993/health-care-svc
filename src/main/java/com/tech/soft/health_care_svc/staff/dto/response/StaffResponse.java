@@ -22,7 +22,13 @@ public class StaffResponse {
 
     private String lastName;
 
+    private String fullName;
+
     private Gender gender;
+
+    private LocalDate dateOfBirth;
+
+    private Integer age;
 
     private String mobile;
 

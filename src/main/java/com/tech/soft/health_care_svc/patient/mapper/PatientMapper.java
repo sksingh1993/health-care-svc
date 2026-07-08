@@ -15,8 +15,8 @@ public interface PatientMapper {
     @Mapping(target = "active", constant = "true")
     Patient toEntity(PatientRequest request);
 
-//    @Mapping(target = "fullName",
-//            expression = "java(getFullName(patient))")
+    @Mapping(target = "fullName",
+            expression = "java(getFullName(patient))")
     @Mapping(target = "age",
             expression = "java(calculateAge(patient))")
     PatientResponse toResponse(Patient patient);

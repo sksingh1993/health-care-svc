@@ -34,7 +34,7 @@ public class UserManagementServiceImpl
 
     @Override
     public User createDoctorUser(CreateUserRequest userRequest) {
-        userRequest.setRoles(Set.of(RoleType.DOCTOR.name()));
+
 
         return userService.createDiffrentTypeOfUser(userRequest);
     }
