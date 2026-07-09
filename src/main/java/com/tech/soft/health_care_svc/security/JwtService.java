@@ -20,7 +20,7 @@ public class JwtService {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(
-                        new Date(System.currentTimeMillis() + 86400000))
+                        new Date(System.currentTimeMillis() + 1000*60*60))
                 .signWith(
                         Keys.hmacShaKeyFor(secret.getBytes()),
                         SignatureAlgorithm.HS256)
@@ -36,5 +36,14 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+    public long getExpiration(String token){
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        return expiration.getTime();
     }
 }

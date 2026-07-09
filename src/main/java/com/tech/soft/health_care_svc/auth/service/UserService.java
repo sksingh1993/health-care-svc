@@ -13,64 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
+
 //@Transactional
-public class UserService {
-
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-
-
-    public UserResponse createUser(
-            CreateUserRequest request) {
-
-        if (userRepository.existsByUsername(
-                request.getUsername())) {
-
-            throw new RuntimeException(
-                    "Username already exists");
-        }
-
-        Set<Role> roles =
-                request.getRoles()
-                        .stream()
-                        .map(roleCode ->
-                                roleRepository
-                                        .findByRoleCode(roleCode)
-                                        .orElseThrow(() ->
-                                                new RuntimeException(
-                                                        "Role not found: "
-                                                                + roleCode)))
-                        .collect(Collectors.toSet());
-
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(
-                        passwordEncoder.encode(
-                                request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .mobile(request.getMobile())
-                .active(true)
-                .roles(roles)
-                .build();
-
-        User saved =
-                userRepository.save(user);
-
-        return UserResponse.builder()
-                .id(saved.getId())
-                .username(saved.getUsername())
-                .firstName(saved.getFirstName())
-                .lastName(saved.getLastName())
-                .roles(
-                        saved.getRoles()
-                                .stream()
-                                .map(Role::getRoleCode)
-                                .collect(Collectors.toSet()))
-                .build();
-    }
+public interface UserService {
+    public UserResponse createUser(CreateUserRequest request);
+    User createDiffrentTypeOfUser(CreateUserRequest request);
 }

@@ -16,77 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
-public class AuthService {
 
-    private final AuthenticationManager authManager;
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+public interface AuthService {
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request);
 
-        Authentication authenticate = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUserName(),
-                        request.getPassword()));
-
-        String token =
-                jwtService.generateToken(request.getUserName());
-
-        return new LoginResponse(token);
-    }
-
-    public UserResponse createAdmin(
-            CreateUserRequest request) {
-
-        if (userRepository.existsByUsername(
-                request.getUsername())) {
-
-            throw new RuntimeException(
-                    "Username already exists");
-        }
-
-        Set<Role> roles =
-                request.getRoles()
-                        .stream()
-                        .map(roleCode ->
-                                roleRepository
-                                        .findByRoleCode(roleCode)
-                                        .orElseThrow(() ->
-                                                new RuntimeException(
-                                                        "Role not found: "
-                                                                + roleCode)))
-                        .collect(Collectors.toSet());
-
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(
-                        passwordEncoder.encode(
-                                request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .mobile(request.getMobile())
-                .active(true)
-                .roles(roles)
-                .build();
-
-        User saved =
-                userRepository.save(user);
-
-        return UserResponse.builder()
-                .id(saved.getId())
-                .username(saved.getUsername())
-                .firstName(saved.getFirstName())
-                .lastName(saved.getLastName())
-                .roles(
-                        saved.getRoles()
-                                .stream()
-                                .map(Role::getRoleCode)
-                                .collect(Collectors.toSet()))
-                .build();
-    }
+    public UserResponse createAdmin(CreateUserRequest request) ;
 }
