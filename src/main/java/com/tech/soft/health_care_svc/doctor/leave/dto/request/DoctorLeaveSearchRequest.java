@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 public class DoctorLeaveSearchRequest {
 
-    private Long doctorId;
+    private String doctorCode;
 
     private LocalDate fromDate;
 

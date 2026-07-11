@@ -43,7 +43,7 @@ public class DoctorLeaveServiceImpl implements DoctorLeaveService {
 
         leave.setLeaveStatus(LeaveStatus.PENDING);
 
-        leave.setNumberOfDays(DateUtils.calculateDays( request.getFromDate(), request.getToDate()));
+        //leave.setNumberOfDays(DateUtils.calculateDays( request.getFromDate(), request.getToDate()));
 
         leave.setDoctor(doctor);
 
@@ -83,7 +83,13 @@ public class DoctorLeaveServiceImpl implements DoctorLeaveService {
     @Transactional(readOnly = true)
     public Page<DoctorLeaveResponse> searchLeaves(Long doctorId, DoctorLeaveSearchRequest request, Pageable pageable) {
 
-        Specification<DoctorLeave> specification = Specification.where(DoctorLeaveSpecification.active()).and(DoctorLeaveSpecification.doctor(doctorId)).and(DoctorLeaveSpecification.leaveType(request.getLeaveType())).and(DoctorLeaveSpecification.fromDate(request.getFromDate())).and(DoctorLeaveSpecification.toDate(request.getToDate()));
+        Specification<DoctorLeave> specification = Specification
+                .where(DoctorLeaveSpecification.active())
+                .and(DoctorLeaveSpecification.doctor(doctorId))
+                .and(DoctorLeaveSpecification.doctorCode(request.getDoctorCode()))
+                .and(DoctorLeaveSpecification.leaveType(request.getLeaveType()))
+                .and(DoctorLeaveSpecification.fromDate(request.getFromDate()))
+                .and(DoctorLeaveSpecification.toDate(request.getToDate()));
 
         return repository.findAll(specification, pageable).map(mapper::toResponse);
     }

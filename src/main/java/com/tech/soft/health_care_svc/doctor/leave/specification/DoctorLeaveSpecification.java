@@ -3,7 +3,9 @@ package com.tech.soft.health_care_svc.doctor.leave.specification;
 
 import com.tech.soft.health_care_svc.doctor.leave.entity.DoctorLeave;
 import com.tech.soft.health_care_svc.doctor.leave.enums.LeaveType;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 
@@ -17,7 +19,22 @@ public final class DoctorLeaveSpecification {
         return (root, query, cb) ->
                 cb.isTrue(root.get("active"));
     }
+    public static Specification<DoctorLeave> doctorCode(String doctorCode) {
 
+        return (root, query, cb) -> {
+
+            if (!StringUtils.hasText(doctorCode)) {
+                return null;
+            }
+
+            Join<Object, Object> doctor = root.join("doctor");
+
+            return cb.like(
+                    cb.lower(doctor.get("doctorCode")),
+                    "%" + doctorCode.toLowerCase() + "%"
+            );
+        };
+    }
     public static Specification<DoctorLeave> doctor(Long doctorId) {
 
         return (root, query, cb) -> {
@@ -57,7 +74,7 @@ public final class DoctorLeaveSpecification {
             }
 
             return cb.greaterThanOrEqualTo(
-                    root.get("leaveDate"),
+                    root.get("fromDate"),
                     fromDate);
         };
     }
@@ -72,7 +89,7 @@ public final class DoctorLeaveSpecification {
             }
 
             return cb.lessThanOrEqualTo(
-                    root.get("leaveDate"),
+                    root.get("toDate"),
                     toDate);
         };
     }
