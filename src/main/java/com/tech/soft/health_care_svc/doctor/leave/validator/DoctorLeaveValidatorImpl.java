@@ -28,25 +28,30 @@ public class DoctorLeaveValidatorImpl
     private final DoctorLeaveRepository doctorLeaveRepository;
 
     @Override
-    public Doctor validateCreate(Long doctorId, DoctorLeaveRequest request) {
+    public Doctor validateCreate(Long doctorId, DoctorLeaveRequest request,Map<String, String> errors) {
 
         Doctor doctor = doctorValidator.validateActiveDoctor(
                 doctorId);
 
         if (request.getFromDate().isAfter(request.getToDate())) {
-            throw new IllegalArgumentException(
+            errors.put("fromDate",
                     "From date cannot be after To date");
+            /*throw new IllegalArgumentException(
+                    "From date cannot be after To date");*/
         }
         if (doctorLeaveRepository
                 .existsByDoctorIdAndFromDateLessThanEqualAndToDateGreaterThanEqualAndActiveTrue(
                         doctorId,
                         request.getToDate(),
                         request.getFromDate())) {
-            Map<String, String> errors = new HashMap<>();
+
             errors.put(
-                    "email",
-                    "Doctor already exists with email : "
-                            + "email");
+                    "leave",
+                    String.format(
+                            "Leave from %s to %s already exists for Dr. %s.", request.getFromDate(), request.getToDate(),doctor.getFirstName()
+                    )
+            );
+
 
 //            throw new DuplicateResourceException(
 //                    "Doctor already has leave during the selected period.");
@@ -59,7 +64,7 @@ public class DoctorLeaveValidatorImpl
     public Doctor validateUpdate(
             Long doctorId,
             Long id,
-            DoctorLeaveUpdateRequest request) {
+            DoctorLeaveUpdateRequest request,Map<String, String> errors) {
 
         validateLeave(doctorId, id);
 
@@ -77,12 +82,14 @@ public class DoctorLeaveValidatorImpl
                         request.getToDate(),
                         request.getFromDate(),
                         id)) {
-            Map<String, String> errors = new HashMap<>();
+
             errors.put(
-                    "leve",
-                    "Doctor already has leave during the selected period : "
-                            + doctorId);
-            throw new DuplicateResourceException(errors);
+                    "leave",
+                    String.format(
+                            "Leave from %s to %s already exists for Dr. %s.", request.getFromDate(), request.getToDate(),doctor.getFirstName()
+                    )
+            );
+            //throw new DuplicateResourceException(errors);
         }
         return doctor;
     }

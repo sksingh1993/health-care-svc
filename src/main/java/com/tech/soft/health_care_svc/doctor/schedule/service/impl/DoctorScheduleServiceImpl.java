@@ -81,8 +81,28 @@ public class DoctorScheduleServiceImpl
                 Specification.where(
                                 DoctorScheduleSpecification.active())
                         .and(DoctorScheduleSpecification.doctor(doctorId))
+
                         .and(DoctorScheduleSpecification.dayOfWeek(
                                 request.getDayOfWeek()));
+                        /*.and(DoctorScheduleSpecification.slotDuration(
+                                request.getSlotDuration())
+                        );*/
+
+        return repository.findAll(specification, pageable)
+                .map(mapper::toResponse);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DoctorScheduleResponse> searchSchedules( DoctorScheduleSearchRequest request,
+                                                        Pageable pageable) {
+
+        Specification<DoctorSchedule> specification =
+                Specification.where(
+                                DoctorScheduleSpecification.active())
+                        .and(DoctorScheduleSpecification.doctorName(request.getDoctorName()))
+                        .and(DoctorScheduleSpecification.dayOfWeek(
+                                request.getDayOfWeek()));
+
                         /*.and(DoctorScheduleSpecification.slotDuration(
                                 request.getSlotDuration())
                         );*/

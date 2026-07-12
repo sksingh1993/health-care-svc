@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/doctors/{doctorId}/schedules")
+@RequestMapping("/api/v1")
 public class DoctorScheduleController {
 
     private final DoctorScheduleService service;
 
-    @PostMapping
+    @PostMapping("/doctors/{doctorId}/schedules")
     public ResponseEntity<ApiResponse<DoctorScheduleResponse>> createSchedule(
             @PathVariable Long doctorId,
             @Valid @RequestBody DoctorScheduleRequest request)  {
@@ -31,7 +31,7 @@ public class DoctorScheduleController {
                 service.createSchedule(doctorId, request)));
     }
 
-    @PutMapping("/{scheduleId}")
+    @PutMapping("/doctors/{doctorId}/schedules/{scheduleId}")
     public ResponseEntity<ApiResponse<DoctorScheduleResponse>> updateSchedule(
             @PathVariable Long doctorId,
             @PathVariable Long scheduleId,
@@ -45,7 +45,7 @@ public class DoctorScheduleController {
                         request)));
     }
 
-    @GetMapping("/{scheduleId}")
+    @GetMapping("/doctors/{doctorId}/schedules/{scheduleId}")
     public ResponseEntity<ApiResponse<DoctorScheduleResponse>> getSchedule(
             @PathVariable Long doctorId,
             @PathVariable Long scheduleId) {
@@ -57,7 +57,7 @@ public class DoctorScheduleController {
                         scheduleId)));
     }
 
-    @GetMapping
+    @GetMapping("/doctors/{doctorId}/schedules")
     public ResponseEntity<ApiResponse<Page<DoctorScheduleResponse>>> searchSchedules(
             @PathVariable Long doctorId,
             DoctorScheduleSearchRequest request,
@@ -70,8 +70,20 @@ public class DoctorScheduleController {
                         request,
                         pageable)));
     }
+    @GetMapping("/schedules")
+    public ResponseEntity<ApiResponse<Page<DoctorScheduleResponse>>> searchSchedules(
 
-    @DeleteMapping("/{scheduleId}")
+            DoctorScheduleSearchRequest request,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(ApiResponse.success(
+                "Doctor schedule fetched successfully",
+                service.searchSchedules(
+                        request,
+                        pageable)));
+    }
+
+    @DeleteMapping("/doctors/{doctorId}/schedules/{scheduleId}")
     public ResponseEntity<ApiResponse<Void>> deleteSchedule(
             @PathVariable Long doctorId,
             @PathVariable Long scheduleId) {

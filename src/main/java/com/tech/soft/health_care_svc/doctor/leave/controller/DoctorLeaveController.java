@@ -13,16 +13,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 
 @RestController
-@RequestMapping("/api/v1/doctors/{doctorId}/leaves")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class DoctorLeaveController {
 
     private final DoctorLeaveService service;
 
-    @PostMapping
+    @PostMapping("/doctors/{doctorId}/leaves")
     public ResponseEntity<ApiResponse<DoctorLeaveResponse>> create(
             @PathVariable Long doctorId,
             @Valid @RequestBody DoctorLeaveRequest request) {
@@ -33,7 +42,7 @@ public class DoctorLeaveController {
                         service.createLeave(doctorId,request)));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/doctors/{doctorId}/leaves/{id}")
     public ResponseEntity<ApiResponse<DoctorLeaveResponse>> update(
             @PathVariable Long doctorId,
             @PathVariable Long id,
@@ -45,7 +54,7 @@ public class DoctorLeaveController {
                         service.updateLeave(doctorId,id, request)));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/doctors/{doctorId}/leaves/{id}")
     public ResponseEntity<ApiResponse<DoctorLeaveResponse>> get(
             @PathVariable Long doctorId,
             @PathVariable Long id) {
@@ -56,7 +65,7 @@ public class DoctorLeaveController {
                         service.getLeave(doctorId,id)));
     }
 
-    @GetMapping
+    @GetMapping("/doctors/{doctorId}/leaves")
     public ResponseEntity<ApiResponse<Page<DoctorLeaveResponse>>> search(
             @PathVariable Long doctorId,
             @ModelAttribute DoctorLeaveSearchRequest request,
@@ -67,8 +76,18 @@ public class DoctorLeaveController {
                         "Doctor leaves fetched successfully",
                         service.searchLeaves(doctorId,request, pageable)));
     }
+    @GetMapping("/leaves")
+    public ResponseEntity<ApiResponse<Page<DoctorLeaveResponse>>> search(
+            @ModelAttribute DoctorLeaveSearchRequest request,
+            Pageable pageable) {
 
-    @DeleteMapping("/{id}")
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Doctor leaves fetched successfully",
+                        service.searchLeaves(request, pageable)));
+    }
+
+    @DeleteMapping("/doctors/{doctorId}/leaves/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long doctorId,
             @PathVariable Long id) {

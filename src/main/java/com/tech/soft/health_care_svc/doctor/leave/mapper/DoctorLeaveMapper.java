@@ -1,6 +1,7 @@
 package com.tech.soft.health_care_svc.doctor.leave.mapper;
 
 
+import com.tech.soft.health_care_svc.common.util.DateUtils;
 import com.tech.soft.health_care_svc.doctor.entity.Doctor;
 import com.tech.soft.health_care_svc.doctor.leave.dto.request.DoctorLeaveRequest;
 import com.tech.soft.health_care_svc.doctor.leave.dto.request.DoctorLeaveUpdateRequest;
@@ -14,6 +15,8 @@ public interface DoctorLeaveMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "doctor", ignore = true)
     @Mapping(target = "active", constant = "true")
+    @Mapping(target = "numberOfDays",
+    expression = "java(calculateLeaveDay(request))")
     DoctorLeave toEntity(DoctorLeaveRequest request);
 
     @BeanMapping(
@@ -46,5 +49,9 @@ public interface DoctorLeaveMapper {
         }
 
         return doctor.getFirstName() + " " + doctor.getLastName();
+    }
+
+    default Integer calculateLeaveDay(DoctorLeaveRequest request){
+        return DateUtils.calculateDays( request.getFromDate(), request.getToDate());
     }
 }
