@@ -1,6 +1,7 @@
 package com.tech.soft.health_care_svc.doctor.leave.service.impl;
 
 
+import com.tech.soft.health_care_svc.common.exception.DuplicateResourceException;
 import com.tech.soft.health_care_svc.common.util.DateUtils;
 import com.tech.soft.health_care_svc.doctor.entity.Doctor;
 import com.tech.soft.health_care_svc.doctor.leave.dto.request.DoctorLeaveRequest;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +39,11 @@ public class DoctorLeaveServiceImpl implements DoctorLeaveService {
 
     @Override
     public DoctorLeaveResponse createLeave(Long doctorId, DoctorLeaveRequest request) {
-
-        Doctor doctor = validator.validateCreate(doctorId, request);
-
+        Map<String, String> errors = new HashMap<>();
+        Doctor doctor = validator.validateCreate(doctorId, request,errors);
+        if(errors.size()>0){
+            throw new DuplicateResourceException(errors);
+        }
         DoctorLeave leave = mapper.toEntity(request);
 
         leave.setLeaveStatus(LeaveStatus.PENDING);
@@ -54,10 +59,14 @@ public class DoctorLeaveServiceImpl implements DoctorLeaveService {
 
     @Override
     public DoctorLeaveResponse updateLeave(Long doctorId, Long id, DoctorLeaveUpdateRequest request) {
-
+        Map<String, String> errors = new HashMap<>();
         DoctorLeave leave = validator.validateLeave(doctorId, id);
 
-        Doctor doctor = validator.validateUpdate(doctorId, id, request);
+        Doctor doctor = validator.validateUpdate(doctorId, id, request,errors);
+
+        if(errors.size()>0){
+            throw new DuplicateResourceException(errors);
+        }
 
         mapper.updateEntity(request, leave);
 
@@ -87,6 +96,19 @@ public class DoctorLeaveServiceImpl implements DoctorLeaveService {
                 .where(DoctorLeaveSpecification.active())
                 .and(DoctorLeaveSpecification.doctor(doctorId))
                 .and(DoctorLeaveSpecification.doctorCode(request.getDoctorCode()))
+                .and(DoctorLeaveSpecification.leaveType(request.getLeaveType()))
+                .and(DoctorLeaveSpecification.fromDate(request.getFromDate()))
+                .and(DoctorLeaveSpecification.toDate(request.getToDate()));
+
+        return repository.findAll(specification, pageable).map(mapper::toResponse);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DoctorLeaveResponse> searchLeaves( DoctorLeaveSearchRequest request, Pageable pageable) {
+
+        Specification<DoctorLeave> specification = Specification
+                .where(DoctorLeaveSpecification.active())
+                .and(DoctorLeaveSpecification.doctorName(request.getDoctorName()))
                 .and(DoctorLeaveSpecification.leaveType(request.getLeaveType()))
                 .and(DoctorLeaveSpecification.fromDate(request.getFromDate()))
                 .and(DoctorLeaveSpecification.toDate(request.getToDate()));

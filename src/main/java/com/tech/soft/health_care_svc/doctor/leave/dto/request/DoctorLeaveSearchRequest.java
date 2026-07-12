@@ -13,6 +13,8 @@ public class DoctorLeaveSearchRequest {
 
     private String doctorCode;
 
+    private String doctorName;
+
     private LocalDate fromDate;
 
     private LocalDate toDate;

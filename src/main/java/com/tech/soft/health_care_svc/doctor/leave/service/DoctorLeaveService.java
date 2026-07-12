@@ -17,6 +17,7 @@ public interface DoctorLeaveService {
     DoctorLeaveResponse getLeave(Long doctorId,Long id);
 
     Page<DoctorLeaveResponse> searchLeaves(Long doctorId,DoctorLeaveSearchRequest request, Pageable pageable);
+    Page<DoctorLeaveResponse> searchLeaves(DoctorLeaveSearchRequest request, Pageable pageable);
 
     void deleteLeave(Long doctorId,Long id);
 }

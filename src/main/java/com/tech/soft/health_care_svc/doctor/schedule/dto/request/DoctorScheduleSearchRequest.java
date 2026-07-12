@@ -12,4 +12,6 @@ public class DoctorScheduleSearchRequest {
     private DayOfWeek dayOfWeek;
 
     private Integer slotDuration;
+
+    private String doctorName;
 }

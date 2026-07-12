@@ -35,6 +35,24 @@ public final class DoctorLeaveSpecification {
             );
         };
     }
+    public static Specification<DoctorLeave> doctorName(String doctorName) {
+
+        return (root, query, cb) -> {
+
+            if (!StringUtils.hasText(doctorName)) {
+                return null;
+            }
+
+            Join<Object, Object> doctor = root.join("doctor");
+
+            String search = "%" + doctorName.toLowerCase() + "%";
+
+            return cb.or(
+                    cb.like(cb.lower(doctor.get("firstName")), search),
+                    cb.like(cb.lower(doctor.get("lastName")), search)
+            );
+        };
+    }
     public static Specification<DoctorLeave> doctor(Long doctorId) {
 
         return (root, query, cb) -> {

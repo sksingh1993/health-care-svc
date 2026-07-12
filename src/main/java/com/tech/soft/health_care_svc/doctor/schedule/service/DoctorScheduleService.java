@@ -32,6 +32,9 @@ public interface DoctorScheduleService {
             Long doctorId,
             DoctorScheduleSearchRequest request,
             Pageable pageable);
+    Page<DoctorScheduleResponse> searchSchedules(
+            DoctorScheduleSearchRequest request,
+            Pageable pageable);
 
     void deleteSchedule(
             Long doctorId,

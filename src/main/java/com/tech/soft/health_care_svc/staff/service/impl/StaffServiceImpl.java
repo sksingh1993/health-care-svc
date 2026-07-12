@@ -8,7 +8,7 @@ import com.tech.soft.health_care_svc.auth.validator.UserValidator;
 import com.tech.soft.health_care_svc.common.exception.DuplicateResourceException;
 import com.tech.soft.health_care_svc.common.exception.ResourceNotFoundException;
 import com.tech.soft.health_care_svc.common.util.CodeGenerator;
-import com.tech.soft.health_care_svc.doctor.enums.Specialization;
+import com.tech.soft.health_care_svc.staff.enums.Department;
 import com.tech.soft.health_care_svc.staff.dto.request.CreateStaffRequest;
 import com.tech.soft.health_care_svc.staff.dto.request.StaffSearchRequest;
 import com.tech.soft.health_care_svc.staff.dto.request.StaffUpdateRequest;
@@ -18,7 +18,7 @@ import com.tech.soft.health_care_svc.staff.mapper.StaffMapper;
 import com.tech.soft.health_care_svc.staff.repository.StaffRepository;
 import com.tech.soft.health_care_svc.staff.service.StaffService;
 import com.tech.soft.health_care_svc.staff.specification.StaffSpecification;
-import com.tech.soft.health_care_svc.staff.specification.StaffSpecification1;
+import com.tech.soft.health_care_svc.staff.specification.StaffSpecification2;
 import com.tech.soft.health_care_svc.staff.validation.StaffValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -97,25 +97,23 @@ public class StaffServiceImpl implements StaffService {
     public Page<StaffResponse> searchStaff(
             StaffSearchRequest request,
             Pageable pageable) {
-        Page<Staff> page = staffRepository.findAll(
-                StaffSpecification.search(request),
+        /*Page<Staff> page = staffRepository.findAll(
+                StaffSpecification2.search(request),
                 pageable);
 
-        return page.map(staffMapper::toResponse);
+        return page.map(staffMapper::toResponse);*/
 
-        /*Specialization specializationEnum = null;
-        if (request.getDepartment() != null) {
-            specializationEnum = Specialization.valueOf(request.getDepartment().toUpperCase());
-        }
+
         Specification<Staff> specification =
-                Specification.where(StaffSpecification1.isActive())
-                        .and(StaffSpecification1.hasEmployeeId(request.getStaffCode()))
-                        .and(StaffSpecification1.hasName(request.getName()))
-                        .and(StaffSpecification1.hasMobile(request.getMobile()))
-                        .and(StaffSpecification1.hasSpecialization(specializationEnum));
+                Specification.where(StaffSpecification.isActive())
+                        .and(StaffSpecification.hasEmployeeId(request.getEmployeeCode()))
+                        .and(StaffSpecification.hasName(request.getFirstName()))
+                        .and(StaffSpecification.hasName(request.getLastName()))
+                        .and(StaffSpecification.hasMobile(request.getMobile()))
+                        .and(StaffSpecification.hasDepartment(request.getDepartment()));
 
         return staffRepository.findAll(specification, pageable)
-                .map(staffMapper::toResponse);*/
+                .map(staffMapper::toResponse);
     }
 
     @Override

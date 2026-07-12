@@ -53,7 +53,11 @@ public class DoctorScheduleValidatorImpl
             Map<String, String> errors = new HashMap<>();
             errors.put(
                     "schedule",
-                    "Schedule overlaps with existing schedule.");
+                    String.format(
+                            "A schedule already exists on %s from %s to %s.", request.getDayOfWeek(), request.getStartTime(), request.getEndTime()
+                    )
+            );
+            throw new DuplicateResourceException(errors);
             //throw new DuplicateResourceException("Schedule overlaps with existing schedule.");
         }
 
@@ -100,8 +104,10 @@ public class DoctorScheduleValidatorImpl
             Map<String, String> errors = new HashMap<>();
             errors.put(
                     "schedule",
-                    "Schedule overlaps with existing schedule. : "
-                            + doctorId);
+                    String.format(
+                            "A schedule already exists on %s from %s to %s.", day, start, end
+                    )
+            );
             throw new DuplicateResourceException(errors);
         }
     }

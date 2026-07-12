@@ -7,13 +7,14 @@ import com.tech.soft.health_care_svc.doctor.leave.dto.request.DoctorLeaveUpdateR
 import com.tech.soft.health_care_svc.doctor.leave.entity.DoctorLeave;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 public interface DoctorLeaveValidator {
 
-    Doctor validateCreate(Long doctorId,DoctorLeaveRequest request);
+    Doctor validateCreate(Long doctorId, DoctorLeaveRequest request, Map<String, String> errors);
 
     Doctor validateUpdate(Long doctorId,Long id,
-                          DoctorLeaveUpdateRequest request);
+                          DoctorLeaveUpdateRequest request,Map<String, String> errors);
 
     DoctorLeave validateLeave(Long doctorId,Long id);
 

@@ -76,6 +76,16 @@ public class DoctorLeaveController {
                         "Doctor leaves fetched successfully",
                         service.searchLeaves(doctorId,request, pageable)));
     }
+    @GetMapping("/leaves")
+    public ResponseEntity<ApiResponse<Page<DoctorLeaveResponse>>> search(
+            @ModelAttribute DoctorLeaveSearchRequest request,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Doctor leaves fetched successfully",
+                        service.searchLeaves(request, pageable)));
+    }
 
     @DeleteMapping("/doctors/{doctorId}/leaves/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
