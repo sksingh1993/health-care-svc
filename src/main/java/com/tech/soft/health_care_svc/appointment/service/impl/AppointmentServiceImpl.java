@@ -43,10 +43,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     public AppointmentResponse createAppointment(AppointmentRequest request) {
-
+        Map<String, String> errors = new HashMap<>();
         AppointmentValidationResult validation =
-                validator.validateCreate(request);
-
+                validator.validateCreate(request,errors);
+        if(errors.size()>0){
+            throw new DuplicateResourceException(errors);
+        }
         Appointment appointment = mapper.toEntity(request);
 
         appointment.setPatient(validation.getPatient());
@@ -69,9 +71,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                     CodeGenerator.generate("APT",appointment.getId()));
             appointment = repository.save(appointment);
         } catch (DataIntegrityViolationException ex) {
-            Map<String, String> errors = new HashMap<>();
+
             errors.put(
-                    "email",
+                    "database",
                     "Doctor already exists with email : "
                             + "email");
             throw new DuplicateResourceException(errors);

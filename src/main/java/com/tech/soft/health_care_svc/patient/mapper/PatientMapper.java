@@ -1,6 +1,7 @@
 package com.tech.soft.health_care_svc.patient.mapper;
 
 
+import com.tech.soft.health_care_svc.common.dto.PatientDropdownResponse;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientRequest;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientUpdateRequest;
 import com.tech.soft.health_care_svc.patient.dto.response.PatientResponse;
@@ -27,7 +28,17 @@ public interface PatientMapper {
     void updateEntity(
             PatientUpdateRequest request,
             @MappingTarget Patient patient);
+    @Mapping(target = "age",
+            expression = "java(calculateAge(patient))")
+    @Mapping(target = "value",source = "id")
+    @Mapping(target = "label",
+    expression = "java(getLabel(patient))")
+    PatientDropdownResponse toDropdown(Patient patient);
 
+    default String getLabel(Patient patient){
+        return patient.getPatientCode() + " - "
+                + patient.getFirstName()+" "+patient.getLastName();
+    }
     default Integer calculateAge(Patient patient) {
         if (patient.getDateOfBirth() == null) {
             return null;

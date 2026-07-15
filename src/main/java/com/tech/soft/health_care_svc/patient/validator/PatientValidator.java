@@ -7,12 +7,14 @@ import com.tech.soft.health_care_svc.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 @RequiredArgsConstructor
 public class PatientValidator {
     private final PatientRepository patientRepository;
 
-    public Patient validateActivePatient(Long patientId) {
+    public Patient validateActivePatient(Long patientId, Map<String, String> errors) {
 
 
         Patient patient = patientRepository

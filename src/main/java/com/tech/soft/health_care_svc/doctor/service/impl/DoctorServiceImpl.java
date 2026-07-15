@@ -1,16 +1,16 @@
 package com.tech.soft.health_care_svc.doctor.service.impl;
 
 import com.tech.soft.health_care_svc.auth.dto.CreateUserRequest;
-import com.tech.soft.health_care_svc.auth.dto.UserResponse;
 import com.tech.soft.health_care_svc.auth.entity.User;
 import com.tech.soft.health_care_svc.auth.enums.RoleType;
 import com.tech.soft.health_care_svc.auth.mapper.UserMapper;
 import com.tech.soft.health_care_svc.auth.service.UserManagementService;
 import com.tech.soft.health_care_svc.auth.validator.UserValidator;
+import com.tech.soft.health_care_svc.common.dto.DoctorDropdownResponse;
+import com.tech.soft.health_care_svc.common.dto.DropdownResponse;
 import com.tech.soft.health_care_svc.common.exception.DuplicateResourceException;
 import com.tech.soft.health_care_svc.common.exception.ResourceNotFoundException;
 import com.tech.soft.health_care_svc.common.util.CodeGenerator;
-import com.tech.soft.health_care_svc.common.util.DoctorCodeGenerator;
 import com.tech.soft.health_care_svc.doctor.dto.request.DoctorRequest;
 import com.tech.soft.health_care_svc.doctor.dto.request.DoctorSearchRequest;
 import com.tech.soft.health_care_svc.doctor.dto.request.DoctorUpdateRequest;
@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -138,6 +139,25 @@ public class DoctorServiceImpl implements DoctorService {
             e.printStackTrace();
         }
 
+
+    }
+    @Override
+    public List<DoctorDropdownResponse> getDropdown() {
+
+        return doctorRepository.findAll()
+                .stream()
+                .filter(Doctor::getActive)
+                .map(doctor -> new DoctorDropdownResponse(
+
+                        doctor.getId(),
+
+                        doctor.getDoctorCode()
+                                + " - "
+                                + doctor.getFirstName() +" "+doctor.getLastName(),
+                        doctor.getSpecialization().toString()
+
+                ))
+                .toList();
 
     }
 

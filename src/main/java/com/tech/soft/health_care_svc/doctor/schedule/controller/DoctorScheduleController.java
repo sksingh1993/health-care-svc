@@ -1,5 +1,6 @@
 package com.tech.soft.health_care_svc.doctor.schedule.controller;
 
+import com.tech.soft.health_care_svc.appointment.dto.response.AvailableSlotResponse;
 import com.tech.soft.health_care_svc.common.dto.ApiResponse;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleRequest;
 import com.tech.soft.health_care_svc.doctor.schedule.dto.request.DoctorScheduleSearchRequest;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -95,5 +99,23 @@ public class DoctorScheduleController {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         "Doctor schedule deleted successfully",null));
+    }
+
+    @GetMapping("/doctor-schedules/doctor/{doctorId}/available-slots")
+    public ResponseEntity<ApiResponse<List<AvailableSlotResponse>>> getAvailableSlots(
+
+            @PathVariable Long doctorId,
+
+            @RequestParam LocalDate appointmentDate) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Available slots fetched successfully",
+                        service.getAvailableSlots(
+                                doctorId,
+                                appointmentDate
+                        )
+                )
+        );
     }
 }

@@ -5,8 +5,10 @@ import com.tech.soft.health_care_svc.appointment.dto.request.AppointmentRequest;
 import com.tech.soft.health_care_svc.appointment.dto.request.AppointmentSearchRequest;
 import com.tech.soft.health_care_svc.appointment.dto.request.AppointmentUpdateRequest;
 import com.tech.soft.health_care_svc.appointment.dto.response.AppointmentResponse;
+import com.tech.soft.health_care_svc.appointment.dto.response.AvailableSlotResponse;
 import com.tech.soft.health_care_svc.appointment.service.AppointmentService;
 import com.tech.soft.health_care_svc.common.dto.ApiResponse;
+import com.tech.soft.health_care_svc.doctor.schedule.service.DoctorScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,12 +17,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/appointments")
 @RequiredArgsConstructor
 public class AppointmentController {
 
     private final AppointmentService service;
+
+    private final DoctorScheduleService doctorScheduleService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<AppointmentResponse>> create(
@@ -94,5 +101,21 @@ public class AppointmentController {
                 ApiResponse.success(
                         "Appointment completed successfully",
                         service.complete(id)));
+    }
+
+    @GetMapping("/doctor/{doctorId}/available-slots")
+    public ResponseEntity<ApiResponse<List<AvailableSlotResponse>>> getAvailableSlots(
+            @PathVariable Long doctorId,
+            @RequestParam LocalDate appointmentDate) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Available slots fetched successfully",
+                        doctorScheduleService.getAvailableSlots(
+                                doctorId,
+                                appointmentDate
+                        )
+                )
+        );
     }
 }

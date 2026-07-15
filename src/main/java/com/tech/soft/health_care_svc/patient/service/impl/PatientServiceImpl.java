@@ -1,5 +1,7 @@
 package com.tech.soft.health_care_svc.patient.service.impl;
 
+import com.tech.soft.health_care_svc.common.dto.DropdownResponse;
+import com.tech.soft.health_care_svc.common.dto.PatientDropdownResponse;
 import com.tech.soft.health_care_svc.common.util.CodeGenerator;
 import com.tech.soft.health_care_svc.common.util.PatientCodeGenerator;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientRequest;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -110,5 +114,16 @@ public class PatientServiceImpl implements PatientService {
         patient.setActive(false);
 
         patientRepository.save(patient);
+    }
+
+    @Override
+    public List<PatientDropdownResponse> getDropdown() {
+
+        return patientRepository.findAll()
+                .stream()
+                .filter(Patient::getActive)
+                .map(patient -> patientMapper.toDropdown(patient))
+                .toList();
+
     }
 }
