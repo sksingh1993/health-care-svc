@@ -6,8 +6,10 @@ import com.tech.soft.health_care_svc.appointment.enums.AppointmentStatus;
 import com.tech.soft.health_care_svc.appointment.repository.AppointmentRepository;
 import com.tech.soft.health_care_svc.common.exception.DuplicateResourceException;
 import com.tech.soft.health_care_svc.common.exception.InvalidRequestException;
+import com.tech.soft.health_care_svc.common.util.DateUtils;
 import com.tech.soft.health_care_svc.doctor.entity.Doctor;
 
+import com.tech.soft.health_care_svc.doctor.leave.repository.DoctorLeaveRepository;
 import com.tech.soft.health_care_svc.doctor.schedule.service.DoctorScheduleService;
 import com.tech.soft.health_care_svc.doctor.validator.DoctorValidator;
 import com.tech.soft.health_care_svc.patient.entity.Patient;
@@ -33,13 +35,14 @@ public class AppointmentValidatorImpl
 
     private final AppointmentRepository appointmentRepository;
 
+    private final DoctorLeaveRepository leaveRepository;
+
     @Override
-    public AppointmentValidationResult validateCreate(
-            AppointmentRequest request) {
+    public AppointmentValidationResult validateCreate(AppointmentRequest request,Map<String, String> errors) {
 
         Patient patient =
                 patientValidator.validateActivePatient(
-                        request.getPatientId());
+                        request.getPatientId(),errors);
 
         Doctor doctor =
                 doctorValidator.validateActiveDoctor(
@@ -52,14 +55,22 @@ public class AppointmentValidatorImpl
                         request.getAppointmentTime());
 
         if (exists) {
-            Map<String, String> errors = new HashMap<>();
+
             errors.put(
-                    "email",
-                    "Doctor already exists with email : "
-                            + "email");
-            throw new DuplicateResourceException(errors);
-//            throw new DuplicateResourceException(String.format("Appointment already exists for doctor id: %d, patient id: %d, date and time.: %s & %s",
-//                    doctor.getId(),patient.getId(),request.getAppointmentDate(),request.getAppointmentTime()));
+                    "appointmentExists",
+                    "An appointment already exists for the selected patient with this doctor on the specified date and time.");
+        }
+        boolean isDoctorOnLeave = leaveRepository
+                .existsByDoctorIdAndFromDateLessThanEqualAndToDateGreaterThanEqualAndActiveTrue(
+                        request.getDoctorId(),
+                        request.getAppointmentDate(),
+                        request.getAppointmentDate()
+                );
+
+        if(isDoctorOnLeave){
+            errors.put(
+                    "doctorOnLeave",
+                    String.format("Doctor is on leave on date %s", DateUtils.convertDate(request.getAppointmentDate())));
         }
 //TO DO
         List<AvailableSlotResponse> slots =
@@ -81,7 +92,7 @@ public class AppointmentValidatorImpl
                 request.getDoctorId(), request.getAppointmentDate(), request.getAppointmentTime(), AppointmentStatus.BOOKED
         );
         if(!selectedSlot.isAvailable()){
-            Map<String, String> errors = new HashMap<>();
+
             errors.put(
                     "email",
                     "Doctor already exists with email : "

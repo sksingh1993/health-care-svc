@@ -22,6 +22,7 @@ public interface DoctorLeaveRepository extends
             LocalDate fromDate
     );
 
+
     boolean existsByDoctorIdAndFromDateLessThanEqualAndToDateGreaterThanEqualAndIdNotAndActiveTrue(
             Long doctorId,
             LocalDate toDate,

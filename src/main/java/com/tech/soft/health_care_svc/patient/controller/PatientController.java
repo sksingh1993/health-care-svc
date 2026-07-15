@@ -2,6 +2,8 @@ package com.tech.soft.health_care_svc.patient.controller;
 
 
 import com.tech.soft.health_care_svc.common.dto.ApiResponse;
+import com.tech.soft.health_care_svc.common.dto.DropdownResponse;
+import com.tech.soft.health_care_svc.common.dto.PatientDropdownResponse;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientRequest;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientUpdateRequest;
 import com.tech.soft.health_care_svc.patient.dto.response.PatientResponse;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/patients")
@@ -82,6 +86,15 @@ public class PatientController {
                 ApiResponse.success(
                         "Patients fetched successfully",
                         patientService.searchPatients(request, pageable)));
+    }
+
+    @GetMapping("/dropdown")
+    public ResponseEntity<ApiResponse<List<PatientDropdownResponse>>> getDropdown() {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Patients fetched successfully",
+                        patientService.getDropdown()));
     }
 
 }

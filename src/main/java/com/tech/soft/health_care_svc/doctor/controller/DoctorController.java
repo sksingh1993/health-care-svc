@@ -2,6 +2,8 @@ package com.tech.soft.health_care_svc.doctor.controller;
 
 
 import com.tech.soft.health_care_svc.common.dto.ApiResponse;
+import com.tech.soft.health_care_svc.common.dto.DoctorDropdownResponse;
+import com.tech.soft.health_care_svc.common.dto.DropdownResponse;
 import com.tech.soft.health_care_svc.doctor.dto.request.DoctorRequest;
 import com.tech.soft.health_care_svc.doctor.dto.request.DoctorSearchRequest;
 import com.tech.soft.health_care_svc.doctor.dto.request.DoctorUpdateRequest;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/doctors")
@@ -86,5 +90,13 @@ public class DoctorController {
                 ApiResponse.success(
                         "Doctor deleted successfully",
                         null));
+    }
+    @GetMapping("/dropdown")
+    public ResponseEntity<ApiResponse<List<DoctorDropdownResponse>>> getDropdown() {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Doctors fetched successfully",
+                        doctorService.getDropdown()));
     }
 }

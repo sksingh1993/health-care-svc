@@ -1,11 +1,15 @@
 package com.tech.soft.health_care_svc.patient.service;
 
+import com.tech.soft.health_care_svc.common.dto.DropdownResponse;
+import com.tech.soft.health_care_svc.common.dto.PatientDropdownResponse;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientRequest;
 import com.tech.soft.health_care_svc.patient.dto.request.PatientUpdateRequest;
 import com.tech.soft.health_care_svc.patient.dto.response.PatientResponse;
 import com.tech.soft.health_care_svc.patient.dto.search.PatientSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 
 public interface PatientService {
@@ -23,5 +27,6 @@ public interface PatientService {
             PatientUpdateRequest request);
 
     void deletePatient(Long id);
+    List<PatientDropdownResponse> getDropdown();
 
 }
